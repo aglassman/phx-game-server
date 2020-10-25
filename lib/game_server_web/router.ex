@@ -8,6 +8,7 @@ defmodule GameServerWeb.Router do
     plug :put_root_layout, {GameServerWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug GameServerWeb.Auth
   end
 
   pipeline :api do
@@ -17,7 +18,11 @@ defmodule GameServerWeb.Router do
   scope "/", GameServerWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    live "/", PageLive
+    get  "/login", LoginController, :index
+    post "/login", LoginController, :login
+    live "/create-user", CreateUserLive
+
   end
 
   # Other scopes may use custom stacks.

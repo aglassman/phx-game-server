@@ -17,7 +17,7 @@ defmodule GameServer.Application do
       # {GameServer.Worker, arg}
     ]
 
-    #    :dets.open_file(:users, type: :set)
+    :ets.new(:users, [:set, :public, :named_table])
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

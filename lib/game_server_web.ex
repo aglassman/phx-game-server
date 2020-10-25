@@ -47,6 +47,8 @@ defmodule GameServerWeb do
       use Phoenix.LiveView,
         layout: {GameServerWeb.LayoutView, "live.html"}
 
+      import GameServerWeb.LiveHelpers
+
       unquote(view_helpers())
     end
   end

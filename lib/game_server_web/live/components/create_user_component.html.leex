@@ -1,0 +1,65 @@
+<%= if @current_user do %>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"><%= "Welcome #{@current_user.username}" %></p>
+        </header>
+        <section class="modal-card-body">
+            <article class="message">
+                <div class="message-body">
+                    Now, go play some games!
+                    <a href="/">Lobby</a>
+                </div>
+            </article>
+        </section>
+        <footer class="modal-card-foot">
+        </footer>
+    </div>
+<% else %>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Create User</p>
+        </header>
+        <%= f = form_for :user, "#", [phx_change: :validate, phx_submit: :create, phx_target: @myself] %>
+        <section class="modal-card-body">
+            <%= if @error do %>
+                <article class="message is-danger">
+                    <div class="message-body">
+                        <%= @error %>
+                    </div>
+                </article>
+            <% end %>
+            <div class="field">
+
+                <label class="label">Name</label>
+                <div class="control">
+                    <%= text_input f, :username, value: @username, class: "input", autocomplete: "off" %>
+                </div>
+                <%= case @validity.username do %>
+                    <% {:error, error_message} -> %><p class="help is-danger"><%= error_message %></p>
+                    <% _ -> %>
+                <% end %>
+                <%= case @validity do %>
+                    <% %{username: {:error, _}} -> %>
+                    <% %{username_available: false} -> %><p class="help is-danger">This username is unavailable</p>
+                    <% %{username_available: true} -> %><p class="help is-success">This username is available</p>
+                    <% _ -> %>
+                <% end %>
+
+                <label class="label">Password</label>
+                <div class="control">
+                    <%= text_input f, :password, value: @password, class: "input", type: "password" %>
+                </div>
+                <%= case @validity.password do %>
+                    <% {:error, error_message} -> %><p class="help is-danger"><%= error_message %></p>
+                    <% _ -> %>
+                <% end %>
+
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <%= submit "Create User", class: "button is-success", disabled: !allow_create?(@validity) %>
+        </footer>
+
+        </form>
+    </div>
+<% end %>

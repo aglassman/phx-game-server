@@ -1,7 +1,7 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="https://bulma.io">
-            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+            <b>Game Server</b>
         </a>
 
         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
@@ -18,7 +18,7 @@
                 Home
             </a>
 
-            <a class="navbar-item">
+            <a class="navbar-item" data-tooltip="Tooltip Text">
                 Documentation
             </a>
 
@@ -46,34 +46,32 @@
         </div>
 
         <div class="navbar-end">
-            <div class="navbar-item">
-
-               <span class="icon has-text-info">
-                  <i class="fas fa-2x fa-user"></i>
-                </span>
-                <div class="buttons">
-                    <button class="button is-primary" phx-click="open" phx-target="#login">
-                        Log in
-                    </button>
+            <%= if @current_user do %>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        <div class="media">
+                            <div class="media-left">
+                            <span class="icon has-text-info" data-tooltip="Tooltip Text">
+                              <i class="fas fa-2x fa-user" data-tooltip="Tooltip Text"></i>
+                            </span>
+                            </div>
+                            <div class="media-content">
+                                <p class="title is-4"><%= @current_user.username %></p>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                            Profile
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Logout
+                        </a>
+                    </div>
                 </div>
-            </div>
+            <% end %>
         </div>
     </div>
 </nav>
-
-<%= live_component @socket, ModalComponent, id: :login do %>
-<div class="modal-card">
-    <header class="modal-card-head">
-        <p class="modal-card-title">Modal title</p>
-        <button class="delete" aria-label="close" phx-click="close" phx-target="#login"></button>
-    </header>
-    <section class="modal-card-body">
-        <%= live_component @socket, CreateUserComponent, id: :create_user %>
-    </section>
-    <footer class="modal-card-foot">
-        <button class="button is-success">Create User</button>
-        <button class="button">Cancel</button>
-    </footer>
-</div>
-<% end %>
 

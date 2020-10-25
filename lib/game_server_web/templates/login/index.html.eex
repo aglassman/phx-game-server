@@ -1,0 +1,36 @@
+<div class="modal is-active">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Game Server - Login</p>
+            </header>
+            <%= form_for :user, Routes.login_path(@conn, :login), fn f -> %>
+            <section class="modal-card-body">
+                <%= if get_flash(@conn, :error) do %>
+                <article class="message is-danger">
+                    <div class="message-body">
+                        <%= get_flash(@conn, :error) %>
+                    </div>
+                </article>
+                <% end %>
+                <div class="field">
+                    <label class="label">Name</label>
+                    <div class="control">
+                        <%= text_input f, :username, placeholder: "Name", class: "input" %>
+                    </div>
+                    <label class="label">Password</label>
+                    <div class="control">
+                        <%= text_input f, :password, placeholder: "Password", class: "input", type: "password" %>
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <%= submit "Login", class: "button is-success" %>
+                <a href="/create-user" class="button is-primary">New User</a>
+            </footer>
+            <% end %>
+            </form>
+        </div>
+    </div>
+</div>

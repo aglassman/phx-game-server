@@ -2,8 +2,15 @@ defmodule GameServerWeb.PageLive do
   use GameServerWeb, :live_view
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    IO.inspect(["**** mounting ****", session, socket])
+    socket = assign_defaults(session, socket)
     {:ok, assign(socket, login_active: true, query: "", results: %{})}
+  end
+
+  @impl true
+  def handle_event("suggest", %{"q" => query}, socket) do
+    {:noreply, assign(socket, results: search(query), query: query)}
   end
 
   @impl true

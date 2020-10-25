@@ -20,6 +20,7 @@ defmodule GameServer.MixProject do
   def application do
     [
       mod: {GameServer.Application, []},
+      env: [user_storage: :dets],
       extra_applications: [:logger, :runtime_tools]
     ]
   end
