@@ -1,11 +1,81 @@
 <main role="main" class="container">
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://bulma.io">
+        <b>Game Server</b>
+      </a>
 
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+         data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
 
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item">
+          Home
+        </a>
+
+        <a class="navbar-item" data-tooltip="Tooltip Text">
+          Documentation
+        </a>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            More
+          </a>
+
+          <div class="navbar-dropdown">
+            <a class="navbar-item">
+              About
+            </a>
+            <a class="navbar-item">
+              Jobs
+            </a>
+            <a class="navbar-item">
+              Contact
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item">
+              Report an issue
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar-end">
+        <%= if @current_user do %>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            <div class="media">
+              <div class="media-left">
+                            <span class="icon has-text-info" data-tooltip="Tooltip Text">
+                              <i class="fas fa-2x fa-user" data-tooltip="Tooltip Text"></i>
+                            </span>
+              </div>
+              <div class="media-content">
+                <p class="title is-4"><%= @current_user.username %></p>
+              </div>
+            </div>
+          </a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item">
+              Profile
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item" href="/logout">
+              Logout
+            </a>
+          </div>
+        </div>
+        <% else %>
+          <a href="/login" class="button is-success">Login</a>
+        <% end %>
+      </div>
+    </div>
+  </nav>
   <%= @inner_content %>
 </main>

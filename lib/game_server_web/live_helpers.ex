@@ -9,11 +9,12 @@ defmodule GameServerWeb.LiveHelpers do
     with {:ok, user} <- GameServer.UserRegistry.get_user(username) do
       socket = assign(socket, current_user: user)
     else
-      {:error, _} -> redirect(socket, to: "/login")
+      {:error, _} -> assign(socket, current_user: nil)
     end
   end
 
   def assign_defaults(%{}, socket) do
-    redirect(socket, to: "/login")
+    socket
+    |> assign(current_user: nil)
   end
 end

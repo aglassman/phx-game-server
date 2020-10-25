@@ -34,4 +34,10 @@ defmodule GameServerWeb.Auth do
     |> put_session(:username, username)
     |> configure_session(renew: true)
   end
+
+  def logout(conn) do
+    conn
+    |> put_session(:username, nil)
+    |> configure_session(renew: true)
+  end
 end

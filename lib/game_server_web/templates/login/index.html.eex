@@ -28,6 +28,7 @@
             <footer class="modal-card-foot">
                 <%= submit "Login", class: "button is-success" %>
                 <a href="/create-user" class="button is-primary">New User</a>
+                <a href="/" class="button is-danger">Cancel</a>
             </footer>
             <% end %>
             </form>

@@ -20,6 +20,12 @@ defmodule GameServerWeb.LoginController do
     end
   end
 
+  def logout(conn, _params) do
+    conn
+    |> GameServerWeb.Auth.logout()
+    |> redirect(to: "/")
+  end
+
   def login(conn, _params) do
     render(conn, "index.html")
   end

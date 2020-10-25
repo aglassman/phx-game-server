@@ -21,6 +21,7 @@ defmodule GameServerWeb.Router do
     live "/", PageLive
     get  "/login", LoginController, :index
     post "/login", LoginController, :login
+    get "/logout", LoginController, :logout
     live "/create-user", CreateUserLive
 
   end
