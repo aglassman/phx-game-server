@@ -5,7 +5,8 @@ defmodule GameServerWeb.CreateUserLive do
 
   @impl true
   def mount(_params, session, socket) do
-    socket = assign_defaults(session, socket)
+    IO.inspect(["**** mounting #{__MODULE__} ****"])
+    socket = assign_defaults(socket, session)
     {:ok, assign(socket, [])}
   end
 

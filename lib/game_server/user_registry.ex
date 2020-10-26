@@ -67,7 +67,7 @@ defmodule GameServer.UserRegistry do
          {:ok, hashed_password} <- validate_and_hash_password(password),
          {:ok, valid_user_properties} <- validate_user_properties(user_properties),
          true <-
-           :ets.insert_new(
+           :dets.insert_new(
              :users,
              {valid_username, hashed_password, user_properties, game_preferences = %{}}
            ) do
@@ -98,7 +98,7 @@ defmodule GameServer.UserRegistry do
   @spec get_user(username :: String.t()) ::
           {:ok, {username :: String.t(), user_preferences :: map(), game_preferences :: map()}}
   def get_user(username) do
-    with [entry] <- :ets.lookup(:users, username) do
+    with [entry] <- :dets.lookup(:users, username) do
       {:ok, to_user(entry)}
     else
       _ -> {:error, "User does not exist."}
@@ -106,7 +106,7 @@ defmodule GameServer.UserRegistry do
   end
 
   def authenticate(username, password) do
-    with [{username, hashed_password, _, _}] <- :ets.lookup(:users, username),
+    with [{username, hashed_password, _, _}] <- :dets.lookup(:users, username),
          true <- Hasher.check_password_hash(password, hashed_password) do
       {:ok, username}
     else

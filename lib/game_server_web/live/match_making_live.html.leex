@@ -1,0 +1,22 @@
+<div class="columns">
+  <%= tag(:div, class: ["column ", "is-one-third"]) %>
+    <%= live_component @socket, ActiveGamesSummaryComponent,
+      id: :summary,
+      games_summary: @games_summary,
+      selected_game: @selected_game %>
+  </div>
+  <%= if @current_user != nil do %>
+    <div class="column">
+      <div class="tile is-ancestor is
+      -flex-wrap-wrap">
+          <%= for {game_id, active_game} <- @games_summary do %>
+              <%= live_component @socket, ActiveGameComponent,
+                id: game_id,
+                active_game: active_game,
+                selected_game: @selected_game %>
+          <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+

@@ -2,6 +2,7 @@ defmodule ModalComponent do
   use Phoenix.LiveComponent
 
   def mount(socket) do
+    IO.inspect(["**** mounting #{__MODULE__} ****"])
     {:ok, assign(socket, is_active: false, closable: false)}
   end
 

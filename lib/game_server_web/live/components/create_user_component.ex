@@ -12,6 +12,7 @@ defmodule CreateUserComponent do
   alias GameServer.UserRegistry
 
   def mount(socket) do
+    IO.inspect(["**** mounting #{__MODULE__} ****"])
     validity = %{
       password: nil,
       username: nil,

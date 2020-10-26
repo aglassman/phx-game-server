@@ -15,6 +15,11 @@ config :game_server, GameServerWeb.Endpoint,
   pubsub_server: GameServer.PubSub,
   live_view: [signing_salt: "TzjGsVx4"]
 
+config :game_server, games: [
+  GameServer.Games.Cubes,
+  GameServer.Games.Chess,
+]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

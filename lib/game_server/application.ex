@@ -17,12 +17,17 @@ defmodule GameServer.Application do
       # {GameServer.Worker, arg}
     ]
 
-    :ets.new(:users, [:set, :public, :named_table])
+    :dets.open_file(:users, type: :set)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: GameServer.Supervisor]
-    Supervisor.start_link(children, opts)
+
+    links = Supervisor.start_link(children, opts)
+
+    GameServer.Games.GameRegistry.init_lobbies()
+
+    links
   end
 
   # Tell Phoenix to update the endpoint configuration
