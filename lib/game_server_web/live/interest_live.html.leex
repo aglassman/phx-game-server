@@ -13,6 +13,7 @@
               <%= live_component @socket, ActiveGameComponent,
                 id: game_id,
                 active_game: active_game,
+                current_user: @current_user,
                 selected_game: @selected_game %>
           <% end %>
       </div>

@@ -1,7 +1,8 @@
 defmodule GameServerWeb.Auth do
   import Plug.Conn
 
-  alias GameServer.UserRegistry
+  alias GameServer.Users.UserRegistry
+  alias GameServer.Users.UserEvents
 
   def init(opts), do: opts
 
@@ -30,12 +31,18 @@ defmodule GameServerWeb.Auth do
   #  end
 
   def login(conn, username) do
+
+    UserEvents.logged_in(username)
+
     conn
     |> put_session(:username, username)
     |> configure_session(renew: true)
   end
 
   def logout(conn) do
+
+    UserEvents.logged_out(get_session(conn, :username))
+
     conn
     |> put_session(:username, nil)
     |> configure_session(renew: true)

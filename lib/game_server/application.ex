@@ -12,9 +12,9 @@ defmodule GameServer.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
       # Start the Endpoint (http/https)
-      GameServerWeb.Endpoint
-      # Start a worker by calling: GameServer.Worker.start_link(arg)
-      # {GameServer.Worker, arg}
+      GameServerWeb.Endpoint,
+      # Start the Presence system
+      GameServer.Presence
     ]
 
     :dets.open_file(:users, type: :set)

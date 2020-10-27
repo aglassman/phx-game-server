@@ -1,8 +1,8 @@
-defmodule GameServer.UserRegistryTest do
+defmodule GameServer.Users.UserRegistryTest do
   use ExUnit.Case
 
-  alias GameServer.UserRegistry
-  alias GameServer.UserRegistry.User
+  alias GameServer.Users.UserRegistry
+  alias GameServer.Users.User
 
   setup do
     :ets.new(:users, [:set, :protected, :named_table])

@@ -1,13 +1,15 @@
 defmodule ActiveGamesSummaryComponent do
   use Phoenix.LiveComponent
 
+  alias GameServer.Games.Lobby
+
   @moduledoc """
   Requires @games_summary of format"
   %{
     id: String.t(),
     name: String.t(),
-    active_players: int(),
-    interested_players: int()
+    active_players: map(),
+    interest: map()
   }
   """
 
@@ -29,6 +31,14 @@ defmodule ActiveGamesSummaryComponent do
     end
   end
 
+  def interested_player_count(game_summary) do
+   Lobby.interest_count(game_summary.interest)
+  end
+
+  def active_player_count(game_summary) do
+    map_size(game_summary.active_players)
+  end
+
   def render(assigns) do
     ~L"""
     <table class="table">
@@ -48,14 +58,14 @@ defmodule ActiveGamesSummaryComponent do
                 phx-target="<%= @myself %>">
                   <td><%= game_summary.name %></td>
 
-                  <%= if game_summary.active_players do %>
-                    <td><%= game_summary.active_players %></td>
+                  <%= if true do %>
+                    <td><%= active_player_count(game_summary) %></td>
                   <% else %>
                     <td><i class="fas fa-spinner fa-pulse"></i></td>
                   <% end %>
 
-                  <%= if game_summary.interested_players do %>
-                    <td><%= game_summary.interested_players %></td>
+                  <%= if true do %>
+                    <td><%= interested_player_count(game_summary) %></td>
                   <% else %>
                     <td><i class="fas fa-spinner fa-pulse"></i></td>
                   <% end %>

@@ -1,10 +1,16 @@
 defmodule GameServer.Games.Lobby do
+
+  @moduledoc """
+  A Lobby is a GenServer that facilitates matchmaking for a specific game.  A Lobby consists of an `interest` map
+  to track who's interested in a game, and a chat log.
+  """
+
   use GenServer
 
   require Logger
-  alias GameServer.UserRegistry.User
+  alias GameServer.Users.User
+  alias GameServer.Users.UserEvents
   alias GameServer.Games.Game
-
 
   @topic "game_lobby"
 
@@ -27,19 +33,30 @@ defmodule GameServer.Games.Lobby do
     Phoenix.PubSub.broadcast GameServer.PubSub, @topic, {:lobby_open, game}
   end
 
+  def request_initial_state(game_id) do
+    GenServer.cast({:global, {:game_lobby, game_id}}, {:request_state, self()})
+  end
+
+  def request_initial_state() do
+    :global.registered_names()
+    |> Enum.filter(&(elem(&1,0) == :game_lobby))
+    |> Enum.map(&{:global, &1})
+    |> Enum.each(&(GenServer.cast(&1, {:request_state, self()})))
+  end
+
   def subscribe(game_id) do
     Phoenix.PubSub.subscribe(GameServer.PubSub, topic(game_id))
   end
 
-  def broadcast_interested(%User{} = user, game_id, interested) when is_boolean(interested) do
-    broadcast(game_id, {:interest, user, interested})
+  def express_interest(game_id, username, interested) do
+    GenServer.cast({:global, {:game_lobby, game_id}}, {:express_interest, username, interested})
   end
 
-  def broadcast_interest_count(game_id, interest) do
-    broadcast(game_id, {:interest_count, game_id, interest_count(interest)})
+  def broadcast_interest(game_id, interest) do
+    broadcast(game_id, {:interest, game_id, interest})
   end
 
-  def interest_count(interest) do
+  def interest_count(interest) when is_map(interest) do
     interest_count = interest
     |> Map.values()
     |> Enum.filter(&(&1))
@@ -60,28 +77,44 @@ defmodule GameServer.Games.Lobby do
     }
   end
 
+  defp user_logged_out(username) do
+    %ChatMessage{
+      user: @chat_bot,
+      message: "#{username} has left the logged out",
+      timestamp: DateTime.now!("Etc/UTC")
+    }
+  end
+
   @impl true
   def init({game}) do
     Logger.info("Opening Lobby: #{game.id}")
-    {:ok, Phoenix.PubSub.subscribe(GameServer.PubSub, topic(game.id))}
+    UserEvents.subscribe()
     {:ok, {game, interest = %{}, chat_messages = [default_message(game)]}}
   end
 
-  def handle_call(:lobby_stats, _form, {game, interest, chat_messages} = state) do
-    {
-      :reply,
-      %{
-        interest_count: interest_count(interest),
-        active_games: 0
-      },
-      state}
+  def handle_cast({:ping, reply_to_pid}, {game, _ , _} = state) do
+    Logger.info("Pinging #{game.id}. #{inspect self()} -> #{inspect reply_to_pid}")
+    GenServer.cast(reply_to_pid, {:pong, game})
+    {:noreply, state}
   end
 
-  def handle_info({:interest, %User{username: username}, interested}, {game, interest, chat_messages}) do
+  def handle_cast({:request_state, reply_to_pid}, {game, interest, chat_messages} = state) do
+    Logger.info("Sending Lobby State for game: #{game.id}. #{inspect self()} -> #{inspect reply_to_pid}")
+    GenServer.cast(reply_to_pid, {:lobby_state, state})
+    {:noreply, state}
+  end
+
+  def handle_cast({:express_interest, username, interested}, {game, interest, chat_messages}) do
     Logger.info("User #{username} is interested(#{interested}) in playing #{game.name}")
-    interest = Map.put(interest, username, interested) |> IO.inspect()
-    broadcast_interest_count(game.id, interest)
+    interest = Map.put(interest, username, interested)
+    broadcast_interest(game.id, interest)
     {:noreply, {game, interest, chat_messages}}
+  end
+
+  def handle_info({:logged_out, username}, {game, interest, chat_messages}) do
+    {_, interest} = Map.pop(interest, username)
+    broadcast_interest(game.id, interest)
+    {:noreply,  {game, interest, chat_messages ++ [user_logged_out(username)]}}
   end
 
   def handle_info(event, state) do

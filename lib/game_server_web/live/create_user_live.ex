@@ -1,7 +1,7 @@
 defmodule GameServerWeb.CreateUserLive do
   use GameServerWeb, :live_view
 
-  alias GameServer.UserRegistry
+  alias GameServer.Users.UserRegistry
 
   @impl true
   def mount(_params, session, socket) do

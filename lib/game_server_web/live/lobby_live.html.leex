@@ -1,0 +1,63 @@
+<%= if @lobby_state do %>
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                <%= @lobby_state.name %>
+            </h1>
+            <h2 class="subtitle">
+                Interested Players: <%= interested_player_count(@lobby_state) %>
+            </h2>
+        </div>
+    </div>
+</section>
+<section class="p-2">
+    <div class="columns">
+        <div class="column is-one-third">
+            <div class="tile is-parent">
+                <article class="tile is-child notification has-background-link-light">
+                    <div class="content">
+                        <p class="title">In Lobby</p>
+                        <div class="content">
+                            <%= for user <- @users_in_lobby do %>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <%= live_component @socket, AvatarComponent, user: user %>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-4"><%= user.username %></p>
+                                    </div>
+                                </div>
+                            <% end %>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <div class="column">
+            <div class="tile is-parent">
+                <article class="tile is-child notification has-background-link-light">
+                    <div class="content">
+                        <p class="title">Chat</p>
+                        <div class="content">
+                            <%= for chat_message <- @lobby_state.chat_messages do %>
+                                <p><%= chat_message.message %></p>
+                            <% end %>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+<% else %>
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Connecting ...
+            </h1>
+        </div>
+    </div>
+</section>
+        <% end %>

@@ -18,11 +18,12 @@ defmodule GameServerWeb.Router do
   scope "/", GameServerWeb do
     pipe_through :browser
 
-    live "/", MatchMakingLive
+    live "/", InterestLive
     get  "/login", LoginController, :index
     post "/login", LoginController, :login
     get "/logout", LoginController, :logout
     live "/create-user", CreateUserLive
+    live "/lobby/:game_id", LobbyLive, :index
 
   end
 

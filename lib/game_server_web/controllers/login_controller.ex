@@ -1,7 +1,7 @@
 defmodule GameServerWeb.LoginController do
   use GameServerWeb, :controller
 
-  alias GameServer.UserRegistry
+  alias GameServer.Users.UserRegistry
 
   def index(conn, _params) do
     render(conn, "index.html")

@@ -1,6 +1,7 @@
 defmodule ActiveGameComponent do
   use Phoenix.LiveComponent
 
+  import GameServerWeb.Router.Helpers
   import Phoenix.HTML.Tag
 
   @moduledoc """
@@ -42,6 +43,13 @@ defmodule ActiveGameComponent do
     end
   end
 
+  def im_interested?(active_game, current_user) do
+    case active_game.interest[current_user.username] do
+      nil -> false
+      interested -> interested
+    end
+  end
+
   def render(assigns) do
     ~L"""
     <div class="tile is-4 p-1">
@@ -63,16 +71,16 @@ defmodule ActiveGameComponent do
                       </div>
                   </div>
                   <footer class="card-footer">
-                      <a href="#" class="card-footer-item" phx-click="broadcast_interest" phx-value-interest="<%= @active_game.im_interested %>" phx-target="<%= @myself %>">
+                      <a href="#" class="card-footer-item" phx-click="broadcast_interest" phx-value-interest="<%= im_interested?(@active_game, @current_user) %>" phx-target="<%= @myself %>">
                         <span class="icon">
-                          <%= if @active_game.im_interested do %>
+                          <%= if im_interested?(@active_game, @current_user)  do %>
                             <i class="fas fa-flag" aria-hidden="true"></i>
                           <% else %>
                             <i class="far fa-flag" aria-hidden="true"></i>
                           <% end %>
                         </span>
                       </a>
-                      <a href="#" class="card-footer-item">Lobby</a>
+                      <a href="<%= lobby_path(@socket, :index, @active_game.id)  %>" class="card-footer-item">Lobby</a>
                       <a href="#" class="card-footer-item">Delete</a>
                   </footer>
                 <% end %>

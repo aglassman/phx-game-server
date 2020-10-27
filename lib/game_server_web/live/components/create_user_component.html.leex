@@ -17,7 +17,10 @@
 <% else %>
     <div class="modal-card">
         <header class="modal-card-head">
-            <p class="modal-card-title">Create User</p>
+            <p class="modal-card-title">
+                <%= live_component @socket, AvatarComponent, color: @color, avatar: @avatar %>
+                <span class="pl-5">Create User</span>
+            </p>
         </header>
         <%= f = form_for :user, "#", [phx_change: :validate, phx_submit: :create, phx_target: @myself] %>
         <section class="modal-card-body">
@@ -31,7 +34,7 @@
             <div class="field">
 
                 <label class="label">Name</label>
-                <div class="control">
+                <div class="control pt-2">
                     <%= text_input f, :username, value: @username, class: "input", autocomplete: "off" %>
                 </div>
                 <%= case @validity.username do %>
@@ -46,13 +49,23 @@
                 <% end %>
 
                 <label class="label">Password</label>
-                <div class="control">
+                <div class="control pt-2">
                     <%= text_input f, :password, value: @password, class: "input", type: "password" %>
                 </div>
                 <%= case @validity.password do %>
                     <% {:error, error_message} -> %><p class="help is-danger"><%= error_message %></p>
                     <% _ -> %>
                 <% end %>
+
+                <label class="label pt-5">Avatar</label>
+                <div class="select">
+                    <%= select f, :avatar, UserRegistry.available_user_avatars(), value: @avatar%>
+                </div>
+
+                <label class="label pt-2">Color</label>
+                <div class="select">
+                    <%= select f, :color, UserRegistry.available_user_colors(), value: @color%>
+                </div>
 
             </div>
         </section>

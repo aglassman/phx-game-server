@@ -1,4 +1,7 @@
-defmodule GameServer.UserRegistry do
+defmodule GameServer.Users.UserRegistry do
+
+  alias GameServer.Users.User
+
   @valid_username_regex ~r/^(?!\-)[a-z0-9\-]{4,20}(?<!\-)$/
 
   @min_password_length 8
@@ -31,16 +34,6 @@ defmodule GameServer.UserRegistry do
     "yellow",
     "red"
   ]
-
-  defmodule User do
-    @type t() :: %__MODULE__{
-            username: String.t(),
-            user_preferences: map(),
-            game_preferences: map()
-          }
-
-    defstruct [:username, :user_preferences, :game_preferences]
-  end
 
   def username_criteria(),
     do:
