@@ -80,7 +80,7 @@ defmodule GameServer.Games.Lobby do
   defp user_logged_out(username) do
     %ChatMessage{
       user: @chat_bot,
-      message: "#{username} has left the logged out",
+      message: "#{username} has logged out.",
       timestamp: DateTime.utc_now()
     }
   end
