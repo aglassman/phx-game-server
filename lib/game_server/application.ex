@@ -23,11 +23,9 @@ defmodule GameServer.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: GameServer.Supervisor]
 
-    links = Supervisor.start_link(children, opts)
+    children = children ++ GameServer.Games.GameRegistry.init_lobbies()
 
-    GameServer.Games.GameRegistry.init_lobbies()
-
-    links
+    Supervisor.start_link(children, opts)
   end
 
   # Tell Phoenix to update the endpoint configuration

@@ -28,8 +28,11 @@ defmodule GameServer.Games do
       |> Map.new()
 
     def init_lobbies() do
-      for game <- @games do
-        GameServer.Games.Lobby.start(game.info())
+      for game <- @games, into: [] do
+        %{
+            id: game,
+            start: {GameServer.Games.Lobby, :start_link, [game]}
+        }
       end
     end
 

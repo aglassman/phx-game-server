@@ -28,9 +28,14 @@ defmodule GameServer.Games.Lobby do
     defstruct [:user, :message, :timestamp]
   end
 
-  def start(%Game{id: id} = game) do
-    {:ok, GenServer.start(__MODULE__, {game}, name: {:global, {:game_lobby, id}})}
-    Phoenix.PubSub.broadcast GameServer.PubSub, @topic, {:lobby_open, game}
+#  def start(%Game{id: id} = game) do
+#    {:ok, GenServer.start(__MODULE__, {game}, name: {:global, {:game_lobby, id}})}
+#    Phoenix.PubSub.broadcast GameServer.PubSub, @topic, {:lobby_open, game}
+#  end
+
+  def start_link(game_module) do
+    %Game{id: id} = game_info = game_module.info()
+    GenServer.start_link(__MODULE__, {game_info}, name: {:global, {:game_lobby, id}})
   end
 
   def request_initial_state(game_id) do
