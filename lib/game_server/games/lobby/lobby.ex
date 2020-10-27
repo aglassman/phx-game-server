@@ -28,11 +28,6 @@ defmodule GameServer.Games.Lobby do
     defstruct [:user, :message, :timestamp]
   end
 
-#  def start(%Game{id: id} = game) do
-#    {:ok, GenServer.start(__MODULE__, {game}, name: {:global, {:game_lobby, id}})}
-#    Phoenix.PubSub.broadcast GameServer.PubSub, @topic, {:lobby_open, game}
-#  end
-
   def start_link(game_module) do
     %Game{id: id} = game_info = game_module.info()
     GenServer.start_link(__MODULE__, {game_info}, name: {:global, {:game_lobby, id}})
@@ -78,7 +73,7 @@ defmodule GameServer.Games.Lobby do
     %ChatMessage{
       user: @chat_bot,
       message: "Welcome to the #{name} lobby.",
-      timestamp: DateTime.now!("Etc/UTC")
+      timestamp: DateTime.utc_now()
     }
   end
 
@@ -86,7 +81,7 @@ defmodule GameServer.Games.Lobby do
     %ChatMessage{
       user: @chat_bot,
       message: "#{username} has left the logged out",
-      timestamp: DateTime.now!("Etc/UTC")
+      timestamp: DateTime.utc_now()
     }
   end
 
