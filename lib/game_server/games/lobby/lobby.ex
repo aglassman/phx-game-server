@@ -112,9 +112,14 @@ defmodule GameServer.Games.Lobby do
   end
 
   def handle_info({:logged_out, username}, {game, interest, chat_messages}) do
-    {_, interest} = Map.pop(interest, username)
+    {user_interested, interest} = Map.pop(interest, username)
     broadcast_interest(game.id, interest)
-    {:noreply,  {game, interest, chat_messages ++ [user_logged_out(username)]}}
+
+    if user_interested do
+      {:noreply,  {game, interest, chat_messages ++ [user_logged_out(username)]}}
+    else
+      {:noreply,  {game, interest, chat_messages}}
+    end
   end
 
   def handle_info(event, state) do
