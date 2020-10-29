@@ -8,19 +8,18 @@ defmodule GameServerWeb.LiveHelpers do
 
   def assign_defaults(socket, %{"username" => username} = session) do
     with {:ok, user} <- UserRegistry.get_user(username) do
-      IO.inspect(session)
-      Logger.info("Setting assign current_user from username #{username}")
-      socket = assign(socket, current_user: user)
+      Logger.debug("Setting assign current_user from username (#{username})")
+      assign(socket, current_user: user)
     else
       {:error, error} ->
-        Logger.info("Error setting assign current_user from username #{username}. error: #{error}")
+        Logger.debug("Error setting assign current_user from username #{username}. error: #{error}")
         assign(socket, current_user: nil)
     end
     |> layout_defaults()
   end
 
   def assign_defaults(socket, _session) do
-    Logger.info("No username in session.")
+    Logger.debug("No username in session.")
     socket
     |> assign(current_user: nil)
     |> layout_defaults()
@@ -37,7 +36,7 @@ defmodule GameServerWeb.LiveHelpers do
   end
 
   def require_login(socket, session) do
-    Logger.info("Require login, no username.")
+    Logger.debug("Require login, no username.")
     redirect(socket, to: "/login")
     |> layout_defaults()
   end

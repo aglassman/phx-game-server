@@ -53,7 +53,6 @@ defmodule GameServerWeb.LobbyLive do
   def handle_info(%{event: "presence_diff"} = event, %{assigns: %{game_id: game_id}} = socket) do
     users_in_lobby = Presence.list_lobby(game_id)
     |> Enum.map(fn {username, %{metas: [user]}} -> Map.take(user, [:username, :user_preferences]) end)
-    |> IO.inspect()
     {:noreply, assign(socket, users_in_lobby: users_in_lobby)}
   end
 

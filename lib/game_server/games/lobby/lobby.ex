@@ -178,7 +178,7 @@ defmodule GameServer.Games.Lobby do
   end
 
   def handle_info(event, state) do
-    IO.inspect(event)
+    # IO.inspect(event)
     {:noreply, state}
   end
 

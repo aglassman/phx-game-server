@@ -8,9 +8,9 @@ defmodule GameServerWeb.LoginController do
   end
 
   def login(conn, %{"user" => %{"username" => username, "password" => password}}) do
-    with {:ok, user} <- UserRegistry.authenticate(username, password) do
+    with {:ok, username} <- UserRegistry.authenticate(username, password) do
       conn
-      |> GameServerWeb.Auth.login(user)
+      |> GameServerWeb.Auth.login(username)
       |> redirect(to: "/")
     else
       {:error, error_message} ->

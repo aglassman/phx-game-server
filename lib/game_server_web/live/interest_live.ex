@@ -22,16 +22,16 @@ defmodule GameServerWeb.InterestLive do
 
   defp lobby_subscribe(game, socket) do
     if connected?(socket) do
-      IO.inspect("Connected")
-      IO.inspect("Subscribed to #{game.id}")
+      Logger.debug("Connected")
+      Logger.debug("Subscribed to #{game.id}")
       {:ok, Lobby.subscribe(game.id)}
     else
-      IO.inspect("Not Connected")
+      Logger.debug("Not Connected")
     end
   end
 
   def handle_cast({:lobby_state, {game, interest, chat_messages}}, %{assigns: %{games_summary: games_summary}} = socket) do
-    Logger.info("Recieved Lobby State")
+    Logger.debug("Recieved Lobby State")
 
     lobby_subscribe(game, socket)
 
@@ -46,7 +46,7 @@ defmodule GameServerWeb.InterestLive do
   end
 
   def handle_cast(request, socket) do
-    IO.inspect([__MODULE__, "NoOp", request])
+    # IO.inspect([__MODULE__, "NoOp", request])
     {:noreply, socket}
   end
 
@@ -60,13 +60,13 @@ defmodule GameServerWeb.InterestLive do
   end
 
   def handle_info({:interest, game_id, interest} = event, %{assigns: %{games_summary: games_summary}} = socket) do
-    IO.inspect([__MODULE__, event])
+    # IO.inspect([__MODULE__, event])
     updated_summary = put_in(games_summary,[game_id, :interest], interest)
     {:noreply, assign(socket, games_summary: updated_summary)}
   end
 
   def handle_info(event, socket) do
-    IO.inspect([__MODULE__, "NoOp", event])
+    # IO.inspect([__MODULE__, "NoOp", event])
     {:noreply,socket}
   end
 end

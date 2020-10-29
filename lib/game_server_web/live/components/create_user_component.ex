@@ -68,19 +68,19 @@ defmodule CreateUserComponent do
     )
   end
 
-  def handle_event(
-        "create",
-        %{"user" => %{
-          "password" => password,
-          "username" => username,
-          "avatar" => avatar,
-          "color" => color
-        }},
-        socket
-      ) do
-
-      send self(), {:create_user, username, password, %{avatar: avatar, color: color}}
-      {:noreply, socket}
-  end
+#  def handle_event(
+#        "create",
+#        %{"user" => %{
+#          "password" => password,
+#          "username" => username,
+#          "avatar" => avatar,
+#          "color" => color
+#        }},
+#        socket
+#      ) do
+#
+#      send self(), {:create_user, username, password, %{avatar: avatar, color: color}}
+#      {:noreply, socket}
+#  end
 
 end

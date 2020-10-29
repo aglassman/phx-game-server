@@ -22,7 +22,7 @@
                 <span class="pl-5">Create User</span>
             </p>
         </header>
-        <%= f = form_for :user, "#", [phx_change: :validate, phx_submit: :create, phx_target: @myself] %>
+        <%= f = form_for :user, "/users", [phx_change: :validate, phx_target: @myself] %>
         <section class="modal-card-body">
             <%= if @error do %>
                 <article class="message is-danger">
@@ -71,6 +71,7 @@
         </section>
         <footer class="modal-card-foot">
             <%= submit "Create User", class: "button is-success", disabled: !allow_create?(@validity) %>
+            <a href="/" class="button is-danger">Cancel</a>
         </footer>
 
         </form>
