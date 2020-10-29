@@ -16,8 +16,10 @@ config :game_server, GameServerWeb.Endpoint,
   live_view: [signing_salt: "TzjGsVx4"]
 
 config :game_server, games: [
-  GameServer.Games.Cubes,
-  GameServer.Games.Chess,
+  GameServer.Games.Game.Cubes,
+  GameServer.Games.Game.Chess,
+  GameServer.Games.Game.Checkers,
+  GameServer.Games.Game.Othello,
 ]
 
 # Configures Elixir's Logger

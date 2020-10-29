@@ -57,6 +57,16 @@ defmodule GameServerWeb.LobbyLive do
     {:noreply, assign(socket, users_in_lobby: users_in_lobby)}
   end
 
+  def handle_info({:interest, _, interest} = event, %{assigns: %{lobby_state: lobby_state}} = socket) do
+    lobby_state = Map.put(lobby_state, :interest, interest)
+    {:noreply, assign(socket, lobby_state: lobby_state)}
+  end
+
+  def handle_info({:chat_messages, _, chat_messages} = event, %{assigns: %{lobby_state: lobby_state}} = socket) do
+    lobby_state = Map.put(lobby_state, :chat_messages, chat_messages)
+    {:noreply, assign(socket, lobby_state: lobby_state)}
+  end
+
   def handle_info(event, socket) do
     Logger.debug("#{inspect [__MODULE__, "NoOp", event]}")
     {:noreply, socket}

@@ -1,4 +1,4 @@
-defmodule GameServer.Games.Chess do
+defmodule GameServer.Games.Game.Cubes do
 
   alias GameServer.Games.{
       Game,
@@ -9,9 +9,9 @@ defmodule GameServer.Games.Chess do
 
   @impl GameBehaviour
   def info(), do: %Game{
-    id: "chess",
-    name: "Chess",
-    description: "A two player board game of strategic skill."
+    id: "cubes",
+    name: "Cubes",
+    description: "Create a beautiful tile mosaic live!"
   }
 
 end

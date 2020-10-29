@@ -3,9 +3,9 @@ defmodule GameServer.Games do
   defmodule Game do
 
     @type t() :: %__MODULE__{
-                  id: String.t(),
-                  name: String.t(),
-                  description: String.t()
+                   id: String.t(),
+                   name: String.t(),
+                   description: String.t()
                  }
 
     defstruct [:id, :name, :description]

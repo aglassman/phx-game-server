@@ -5,15 +5,20 @@
         <b>Game Server</b>
       </div>
 
-      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-         data-target="navbarBasicExample">
+      <a role="button"
+        class="navbar-burger burger has-dropdown is-hoverable <%= if @navbar_expanded do "is-active" end %>"
+        aria-label="menu"
+        aria-expanded="false"
+        data-target="navbarBasicExample"
+        phx-click="toggle_navbar"
+      >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu">
+    <div id="navbarBasicExample" class="navbar-menu <%= if @navbar_expanded do "is-active" end %>">
       <div class="navbar-start">
         <a class="navbar-item" href="/">
           Home

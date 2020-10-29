@@ -3,6 +3,22 @@ defmodule GameServer.Games.Lobby do
   @moduledoc """
   A Lobby is a GenServer that facilitates matchmaking for a specific game.  A Lobby consists of an `interest` map
   to track who's interested in a game, and a chat log.
+
+  Example Interest Map
+  %{
+    "andy": true,
+    "frank": false
+  }
+  Not every user needs to be in the map, but it is useful to track who was interested at one point.
+  This allows the lobby to listen to user events, and perform actions based on current, or prior interest.
+
+  Example Chat Message
+  %ChatMessage{
+    user: %User{username: "andy"},
+    message: "I'm interested in joining a game",
+    timestamp: DateTime.utc_now()
+  }
+
   """
 
   use GenServer
@@ -28,15 +44,27 @@ defmodule GameServer.Games.Lobby do
     defstruct [:user, :message, :timestamp]
   end
 
+  @doc """
+  Creates a globally registered game lobby for the provided game module.  Game module
+  must implement GameServer.Games.GameBehaviour.
+  """
   def start_link(game_module) do
     %Game{id: id} = game_info = game_module.info()
     GenServer.start_link(__MODULE__, {game_info}, name: {:global, {:game_lobby, id}})
   end
 
+  @doc """
+  This function will send the caller a message containing the current state of
+  the lobby for the provided game_id.
+  """
   def request_initial_state(game_id) do
     GenServer.cast({:global, {:game_lobby, game_id}}, {:request_state, self()})
   end
 
+  @doc """
+  A shortcut for a process to request the initial state for all games with an active
+  game lobby.
+  """
   def request_initial_state() do
     :global.registered_names()
     |> Enum.filter(&(elem(&1,0) == :game_lobby))
@@ -44,18 +72,42 @@ defmodule GameServer.Games.Lobby do
     |> Enum.each(&(GenServer.cast(&1, {:request_state, self()})))
   end
 
+  @doc """
+  By subscribing to a lobby, you will receieve messages broadcast to the provided
+  game_lobby:game_id topic.
+
+  Events:
+  :interest
+
+  """
   def subscribe(game_id) do
     Phoenix.PubSub.subscribe(GameServer.PubSub, topic(game_id))
   end
 
+  @doc """
+  This funciton allows a user to express interest in a specific game.
+  """
   def express_interest(game_id, username, interested) do
     GenServer.cast({:global, {:game_lobby, game_id}}, {:express_interest, username, interested})
   end
 
-  def broadcast_interest(game_id, interest) do
+  @doc """
+  Boradcasts an interest message to all lobby subscribers for the provided game_id.
+  """
+  defp broadcast_interest(game_id, interest) do
     broadcast(game_id, {:interest, game_id, interest})
   end
 
+  @doc """
+  Boradcasts an interest message to all lobby subscribers for the provided game_id.
+  """
+  defp broadcast_chat(game_id, chat_messages) do
+    broadcast(game_id, {:chat_messages, game_id, chat_messages})
+  end
+
+  @doc """
+  Calculates how many users are interested given an interest map.
+  """
   def interest_count(interest) when is_map(interest) do
     interest_count = interest
     |> Map.values()
@@ -88,6 +140,9 @@ defmodule GameServer.Games.Lobby do
   @impl true
   def init({game}) do
     Logger.info("Opening Lobby: #{game.id}")
+
+    # Subscribe to user events. Useful for updating chat messages when an interested user
+    # logs in or out.
     UserEvents.subscribe()
     {:ok, {game, interest = %{}, chat_messages = [default_message(game)]}}
   end
@@ -116,7 +171,7 @@ defmodule GameServer.Games.Lobby do
     broadcast_interest(game.id, interest)
 
     if user_interested do
-      {:noreply,  {game, interest, chat_messages ++ [user_logged_out(username)]}}
+      {:noreply,  {game, interest, update_chat_messages(game.id, chat_messages, user_logged_out(username))}}
     else
       {:noreply,  {game, interest, chat_messages}}
     end
@@ -125,6 +180,15 @@ defmodule GameServer.Games.Lobby do
   def handle_info(event, state) do
     IO.inspect(event)
     {:noreply, state}
+  end
+
+  defp update_chat_messages(game_id, current_messages, new_message, max \\ 10) do
+    messages = (current_messages ++ [new_message])
+    |> Enum.take(-1 * max)
+
+    broadcast_chat(game_id, messages)
+
+    messages
   end
 
 end

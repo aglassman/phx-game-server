@@ -7,8 +7,7 @@
   </div>
   <%= if @current_user != nil do %>
     <div class="column">
-      <div class="tile is-ancestor is
-      -flex-wrap-wrap">
+      <div class="tile is-ancestor is-flex-wrap-wrap">
           <%= for {game_id, active_game} <- @games_summary do %>
               <%= live_component @socket, ActiveGameComponent,
                 id: game_id,

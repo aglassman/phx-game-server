@@ -48,6 +48,7 @@ defmodule GameServerWeb do
         layout: {GameServerWeb.LayoutView, "live.html"}
 
       import GameServerWeb.LiveHelpers
+      use GameServerWeb.LiveHelpers
 
       unquote(view_helpers())
     end
@@ -85,6 +86,7 @@ defmodule GameServerWeb do
 
       # Import LiveView helpers (live_render, live_component, live_patch, etc)
       import Phoenix.LiveView.Helpers
+
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View

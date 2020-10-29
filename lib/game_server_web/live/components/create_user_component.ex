@@ -41,7 +41,6 @@ defmodule CreateUserComponent do
         }} = form,
         socket
       ) do
-    IO.inspect(form)
 
     validity = %{
       password: validate_password(password),
@@ -79,13 +78,9 @@ defmodule CreateUserComponent do
         }},
         socket
       ) do
-      user_properties = %{avatar: avatar, color: color}
 
-      with {:ok, user} <- UserRegistry.create_user(username, password, user_properties) do
-        {:noreply, assign(socket, current_user: user)}
-      else
-        {:error, error_message} -> {:noreply, assign(socket, error: error_message)}
-      end
+      send self(), {:create_user, username, password, %{avatar: avatar, color: color}}
+      {:noreply, socket}
   end
 
 end
