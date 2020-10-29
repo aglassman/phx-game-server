@@ -1,0 +1,49 @@
+<section class="p-2">
+    <div class="columns">
+        <div class="column is-one-third">
+            <div class="tile is-parent">
+                <article class="tile is-child notification has-background-link-light">
+                    <div class="content">
+                        <p class="title">In Lobby</p>
+                        <div class="content">
+                            <%= for user <- @users_in_game do %>
+                            <div class="media">
+                                <div class="media-left">
+                                    <%= live_component @socket, AvatarComponent, user: user %>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4"><%= user.username %></p>
+                                </div>
+                            </div>
+                            <% end %>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <div class="column">
+            <div class="tile is-parent">
+                <article class="tile is-child notification has-background-link-light">
+                    <div class="cubes" phx-click="toggle" phx-window-keydown="keypress">
+                        <%= for n <- 1..400 do %>
+                        <div
+                                phx-click="toggle" phx-value-index="<%= n %>"
+                                class="<%=
+                                case @selected == n do
+                                  true -> "selected"
+                                  _ -> ""
+                                end
+                            %>"
+                                style="<%=
+                                case @cube_map[n] do
+                                    {:user, name, color} -> "background-color: #{color}"
+                                    _ -> ""
+                                end
+                            %>"></div>
+                        <% end %>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>

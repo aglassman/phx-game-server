@@ -5,16 +5,18 @@ defmodule GameServer.Games do
     @type t() :: %__MODULE__{
                    id: String.t(),
                    name: String.t(),
-                   description: String.t()
+                   description: String.t(),
+                   module: module()
                  }
 
-    defstruct [:id, :name, :description]
+    defstruct [:id, :name, :description, :module]
 
   end
 
   defmodule GameBehaviour do
 
     @callback info() :: Game.t()
+    @callback new() :: {:ok, Game.t(), binary()}
 
   end
 

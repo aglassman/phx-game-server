@@ -72,8 +72,12 @@ defmodule GameServer.Games.Lobby do
     |> Enum.each(&(GenServer.cast(&1, {:request_state, self()})))
   end
 
+  def request_new_game(game_id) do
+    GenServer.cast({:global, {:game_lobby, game_id}}, {:new_game})
+  end
+
   @doc """
-  By subscribing to a lobby, you will receieve messages broadcast to the provided
+  By subscribing to a lobby, you will receive messages broadcast to the provided
   game_lobby:game_id topic.
 
   Events:
@@ -85,7 +89,7 @@ defmodule GameServer.Games.Lobby do
   end
 
   @doc """
-  This funciton allows a user to express interest in a specific game.
+  This function allows a user to express interest in a specific game.
   """
   def express_interest(game_id, username, interested) do
     GenServer.cast({:global, {:game_lobby, game_id}}, {:express_interest, username, interested})
@@ -103,6 +107,13 @@ defmodule GameServer.Games.Lobby do
   """
   defp broadcast_chat(game_id, chat_messages) do
     broadcast(game_id, {:chat_messages, game_id, chat_messages})
+  end
+
+  @doc """
+  Boradcasts an interest message to all lobby subscribers for the provided game_id.
+  """
+  defp broadcast_new_game(game_id, instance_id) do
+    broadcast(game_id, {:new_game, game_id, instance_id})
   end
 
   @doc """
@@ -137,6 +148,14 @@ defmodule GameServer.Games.Lobby do
     }
   end
 
+  defp new_game_message(instance_id) do
+    %ChatMessage{
+      user: @chat_bot,
+      message: "New game #{instance_id}.",
+      timestamp: DateTime.utc_now()
+    }
+  end
+
   @impl true
   def init({game}) do
     Logger.info("Opening Lobby: #{game.id}")
@@ -145,6 +164,12 @@ defmodule GameServer.Games.Lobby do
     # logs in or out.
     UserEvents.subscribe()
     {:ok, {game, interest = %{}, chat_messages = [default_message(game)]}}
+  end
+
+  def handle_cast({:new_game}, {game, interest, chat_messages}) do
+    {:ok, _, instance_id} = game.module.new()
+    broadcast_new_game(game.id, instance_id)
+    {:noreply, {game, interest,  update_chat_messages(game.id, chat_messages, new_game_message(instance_id))}}
   end
 
   def handle_cast({:ping, reply_to_pid}, {game, _ , _} = state) do

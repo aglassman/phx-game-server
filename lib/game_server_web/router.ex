@@ -25,6 +25,7 @@ defmodule GameServerWeb.Router do
     live "/create-user", CreateUserLive
     post "/users", UserController, :create
     live "/lobby/:game_id", LobbyLive, :index
+    live"/game/cubes/:instance_id", CubesLive, layout: {GameServerWeb.LayoutView, :cubes}
 
   end
 

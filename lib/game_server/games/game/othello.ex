@@ -11,7 +11,8 @@ defmodule GameServer.Games.Game.Othello do
   def info(), do: %Game{
     id: "othello",
     name: "Othello",
-    description: "Othello is a game where not all is black and white."
+    description: "Othello is a game where not all is black and white.",
+    module: __MODULE__
   }
 
 end

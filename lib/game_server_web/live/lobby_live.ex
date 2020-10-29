@@ -44,10 +44,16 @@ defmodule GameServerWeb.LobbyLive do
     lobby_state = %{
                     interest: interest,
                     chat_messages: chat_messages,
-                    active_players: %{}
+                    active_players: %{},
+                    games: []
                   } |> Map.merge(Map.from_struct(game))
 
     {:noreply, assign(socket, lobby_state: lobby_state)}
+  end
+
+  def handle_event("new_game", _, %{assigns: %{game_id: game_id}} = socket) do
+    Lobby.request_new_game(game_id)
+    {:noreply, socket}
   end
 
   def handle_info(%{event: "presence_diff"} = event, %{assigns: %{game_id: game_id}} = socket) do
@@ -63,6 +69,11 @@ defmodule GameServerWeb.LobbyLive do
 
   def handle_info({:chat_messages, _, chat_messages} = event, %{assigns: %{lobby_state: lobby_state}} = socket) do
     lobby_state = Map.put(lobby_state, :chat_messages, chat_messages)
+    {:noreply, assign(socket, lobby_state: lobby_state)}
+  end
+
+  def handle_info( {:new_game, game_id, instance_id} = event, %{assigns: %{lobby_state: lobby_state}} = socket) do
+    lobby_state = Map.put(lobby_state, :games, lobby_state.games ++ [instance_id])
     {:noreply, assign(socket, lobby_state: lobby_state)}
   end
 

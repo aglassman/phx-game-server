@@ -11,7 +11,8 @@ defmodule GameServer.Games.Game.Checkers do
   def info(), do: %Game{
     id: "checkers",
     name: "Checkers",
-    description: "A two player strategy game where you must capture opponent pieces."
+    description: "A two player strategy game where you must capture opponent pieces.",
+    module: __MODULE__
   }
 
 end
